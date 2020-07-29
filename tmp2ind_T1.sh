@@ -85,7 +85,7 @@ echo "  Template T1 : ${T1tmp}"
 echo "   Prob Atlas : ${pAtmp}"
 
 # Fixed ANTs parameters
-nthreads=4
+nthreads=${NSLOTS:-4}
 
 # Registration files
 prefix=TMP2IND_

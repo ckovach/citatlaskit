@@ -75,6 +75,10 @@ do
 			pAtmp="$2"
 			shift
 			;;
+		-x)
+			maskind="-x $2"
+			shift
+			;;
 		*)
 			# Unknown option
 			;;
@@ -95,7 +99,7 @@ echo "  Template T2 : ${T2tmp}"
 echo "   Prob Atlas : ${pAtmp}"
 
 # Fixed ANTs parameters
-nthreads=4
+nthreads=${NSLOTS:-4}
 
 # Registration files
 prefix=TMP2IND_
@@ -111,7 +115,7 @@ pAtmp2ind=pA_tmp2ind.nii.gz
 # Calculate affine and SyN warp
 if [ ! -s ${tmp2ind_warp} ]
 then
-	antsRegistrationSyN.sh -d 3 -n ${nthreads} -t b -o ${prefix} -f ${T1ind} -f ${T2ind} -m ${T1tmp} -m ${T2tmp} 2>&1 > ${logfile}
+	antsRegistrationSyN.sh -d 3 -n ${nthreads} ${maskind} -t b -o ${prefix} -f ${T1ind} -f ${T2ind} -m ${T1tmp} -m ${T2tmp} 2>&1 > ${logfile}
 fi
 
 # Rename warped template T1
