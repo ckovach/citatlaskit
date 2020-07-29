@@ -9,10 +9,11 @@
 # DATES  : 2016-09-30 JMT From scratch
 #          2017-04-10 JMT Fixed dimensions bug in pAtlas resampling
 #          2017-04-11 JMT Duplicated Adam Meher's fixes from T1 to T1T2 version
+#          2017-06-13 JMT Simplied argument handling
 #
 # MIT License
 #
-# Copyright (c) 2016 Mike Tyszka
+# Copyright (c) 2017 Mike Tyszka
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -88,6 +89,7 @@ do
 
 done
 
+
 # Splash text
 echo "------------------------------------------------------------"
 echo " SyN Warp T1 and T2 templates to individual space"
@@ -115,24 +117,27 @@ pAtmp2ind=pA_tmp2ind.nii.gz
 # Calculate affine and SyN warp
 if [ ! -s ${tmp2ind_warp} ]
 then
+    echo "Starting SyN registration"
 	antsRegistrationSyN.sh -d 3 -n ${nthreads} ${maskind} -t b -o ${prefix} -f ${T1ind} -f ${T2ind} -m ${T1tmp} -m ${T2tmp} 2>&1 > ${logfile}
 fi
 
 # Rename warped template T1
 if [ ! -s ${T1tmp2ind} ]
 then
-	mv ${prefix}_Warped.nii.gz ${T1tmp2ind}
+	mv ${prefix}Warped.nii.gz ${T1tmp2ind}
 fi
 
 # Resample template T2 to individual space
 if [ ! -s ${T2tmp2ind} ]
 then
+    echo "Warping T2w template into individual space"
 	WarpImageMultiTransform	3 ${T2tmp} ${T2tmp2ind} -R ${T1ind} ${tmp2ind_warp} ${tmp2ind_affine} --use-BSpline
 fi
 
 # Resample probabilistic atlas to individual space
 if [ ! -s ${pAtmp2ind} ]
 then
+    echo "Warping probabilistic atlas into individual space"
 	WarpImageMultiTransform	4 ${pAtmp} ${pAtmp2ind} -R ${T1ind} ${tmp2ind_warp} ${tmp2ind_affine} --use-BSpline
 fi
 

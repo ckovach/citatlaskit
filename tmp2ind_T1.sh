@@ -67,6 +67,10 @@ do
 			pAtmp="$2"
 			shift
 			;;
+		-x)
+			maskind="-x $2"
+			shift
+			;;
 		*)
 			# Unknown option
 			;;
@@ -100,13 +104,13 @@ pAtmp2ind=pA_tmp2ind.nii.gz
 # Calculate affine and SyN warp
 if [ ! -s ${tmp2ind_warp} ]
 then
-	antsRegistrationSyN.sh -d 3 -n ${nthreads} -t b -o ${prefix} -f ${T1ind} -m ${T1tmp} 2>&1 > ${logfile}
+	antsRegistrationSyN.sh -d 3 -n ${nthreads} ${maskind} -t b -o ${prefix} -f ${T1ind} -m ${T1tmp} 2>&1 > ${logfile}
 fi
 
 # Rename warped template T1
 if [ ! -s ${T1tmp2ind} ]
 then
-	mv ${prefix}_Warped.nii.gz ${T1tmp2ind}
+	mv ${prefix}Warped.nii.gz ${T1tmp2ind}
 fi
 
 # Resample probabilistic atlas to individual space
